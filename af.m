@@ -1,18 +1,41 @@
-% name: af
-% purpose: this is a script with some basic ideas about stats, like glm /
-% sum of squares etc.
-% author: [ma]
-% date: 2017-08
+% name:     af
+% purpose:  - this is a script with some basic ideas about stats, like glm /
+%           sum of squares etc.
+%           - data and progression is from "An Adventure in Statistics"
+%           Andy Field, 2016
+%           - everything is spelled out step by step (instead of
+%           using functions like var or std or ttest2) so you can see every single step.
+%
+% author:   [ma]
+% date:     2017-08
 
 %% basics
 
 % y = [4 1 2 3 2 5 5 3 1 3]';
 % x = [4 4 5 1 4 3 2 4 4 3]';
 
-y = [13 15 30 16 19 23 15 16 26 23]';
-x = [0 2 14 0 13 9 1 4 3 7]';
+%y = [13 15 30 16 19 23 15 16 26 23]';
+%x = [0 2 14 0 13 9 1 4 3 7]';
+% N = length(x);
 
-N = length(x);
+% comparing two means
+% recall that...
+%
+%                observed difference -   expected difference    
+%                    between means        between means if      
+%        t =                            null hypothesis is true 
+%                --------------------./-------------------------- 
+%
+%                    standard error of sample means difference
+%
+% let's do an independent t-test!
+
+x1 = [11 11 10 9 7 11 12 14 19 11 19 11 17 13]';
+x2 = [10 4 9 11 9 14 16 13 7 12 0 10 13 0]';
+y = [x1; x2];
+N = length(x1).*2;
+x = [zeros(N./2,1); ones(N./2,1)]; 
+
 % mean
 meanX = mean(x);
 meanY = mean(y);
@@ -84,11 +107,21 @@ seb = seModel ./ sqrt(predssX); %<-- this is the standard error of b1
 % confidence intervals for b1
 % 95% upper/lower = b +/- (t_n-p .* seb)
 % t for 8 dof, at 0.05 is 2.306
-ci95lower = b1 - (2.306 .* seb);
-ci95upper = b1 + (2.306 .* seb);
+% t for 26 dof, 0.05, is 2.056
+ci95lower = b1 - (2.056 .* seb);
+ci95upper = b1 + (2.056 .* seb);
 
 % is this value is greater than the t stat at N-p dof, then it is
 % significant (depending on what p you want)
+% for a two-tailed test, we must look at the interval between the
+% confidence intervals, if our value lies outside this, then it is
+% significant
+
+% for a paired samples t-test, we would just do the same for the
+% differences.
+% mean(differences) and std of difference
+% se_diff = sd ./ sqrt(N)
+% t = mean(differences) ./ se_diff
 tb = b1 ./ seb;
 
 
@@ -117,13 +150,3 @@ t = (r .* sqrt(N-2))  ./  sqrt(  (1-r.^2)  );
 % df = N - no. parameters
 % for this dataset, df = 8, and at p = 0.05, tnull = 2.306
 % for values smaller than this, the trend is not significant
-keyboard
-
-%% comparing two means
-
-
-
-
-
-
-
