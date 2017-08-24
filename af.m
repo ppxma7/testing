@@ -150,3 +150,11 @@ t = (r .* sqrt(N-2))  ./  sqrt(  (1-r.^2)  );
 % df = N - no. parameters
 % for this dataset, df = 8, and at p = 0.05, tnull = 2.306
 % for values smaller than this, the trend is not significant
+
+
+%% effect size
+d = (meanX1 - meanX2) ./ seModel;
+% for paired samples, would have to use:
+% d = d ./ sqrt(1-r) where r is pearson's correlation
+% standardize by dividing by std and .* sqrt(2)
+
