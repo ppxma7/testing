@@ -9,7 +9,7 @@
 % author:   [ma]
 % date:     2017-08
 
-%% Imagine we have 3 groups
+%% f-ratio
 
 x1 = [8 2 7 8 1 5 7 4 4 4 7 3]';
 x2 = [10 5 3 4 3 7 8 3 4 3 4 3]';
@@ -100,114 +100,92 @@ predssX3 = sum(x3resid);
 x3tot = (x3 - meanX3).^2;
 x3total = sum(x3tot);
 
-% total sum of squares
+% total sum of squares (observed - grand mean)
 sst = sum([predssX1; predssX2; predssX3]);
+% dof here is N - 1
 
-% residual sum of squares
+% residual sum of squares (observed - model (i.e. the group mean) )
 ssr = sum([x1total; x2total; x3total]);
+% dof here is N - no. of groups
 
+% model sum of squares (grand mean - model) (for 3 groups)
+% or to simplify things..
+ssmodel = sst - ssr;
+% dof here is no. of groups - 1
 
+% so far, sst/r/m are all totals, which explain total variation. But sse
+% used sum of all 36 vals, whilst ssmodel used sum of 3 vals (mean of the
+% groups). So, we should find the Mean Sum of Squares (MS), by dividing by
+% dof.
+groups = 3;
+MS_model = ssmodel ./ (groups-1); % used 3 group means minus 1 (for dof)
 
+MS_residual = ssr ./ (N - groups);
 
+% Now can calculate f-ratio (explained variance to noise)
+f_ratio = MS_model ./ MS_residual; 
 
+% dof model is 2, dof resid is 33. Look at f-table and at 0.05, the
+% critical value is 3.28. If our value is less than that, then not
+% significant at p = 0.05
 
+%% contrast coding
 
+% 1) compare 2 groups against control
+% 2) compare 2 groups against each other
+%
+%        contrast 1   contrast 2    contrast 1 .*
+%                                   contrast 2
+%                                    (product)
+%     x1 = [ -2           0             0        ] (x1 is our control)
+%     x2 = [  1           1             1        ]
+%     x3 = [  1          -1            -1        ]
 
+% y = b0 + b1(dummy1) + b2(dummy2) + error
+% y = b0 + b1(x2 & x3 vs. x1) + b2 (x2 vs. x3)
 
-% 
-% 
-% %% for glm...
-% % for outcome_i = (  b_0  + b_1 .* X_i ) + error
-% % predictor sum of squares
-% predssX = sum((xcp.^2));
-% % find regression coeffs
-% b1 = scp ./ predssX;
-% 
-% % so far...
-% % Y = b0 + b1  .*  X
-% % rearrange: b0 = Y - b1 .* X
-% % b0 = mean(Y) - b1 .* mean(X)
-% b0 = meanY - (b1 .* meanX);
-% 
-% % get a model prediction
-% % e.g. b0 + b1 .* X
-% 
-% % make space, fill it up
-% modelData = [zeros(N,1) zeros(N,1)];
-% modelData(:,1) = repmat(b0, N, 1);
-% modelData(:,2) = repmat(b1, N, 1);
-% 
-% % now we output our model y's
-% modelY = modelData(:,1) + (modelData(:,2).*x); 
-% 
-% % residual y's (y - model y's)
-% residY = y - modelY;
-% sqresidY = residY.^2;
-% ssr = sum(sqresidY); % residual sum of squares
-% 
-% 
-% % now we can find the standard error of b
-% p = 2; % number of parameters (regression coeffs)
+% in this case b0 = grand mean (if group membership is unknown, then
+% predicted value of the outcome would be the grand mean). 
+
+% mean(x1) = b0 + (-2 .* b1) + (b2 .* 0) %look at first row, first two
+%                                                                  columns
+% mean(x1) = b0 - 2b1
+% 2b1 = b0 - mean(x1)
+% 2b1 =     ( mean(x2) + mean(x3) + mean(x1) ./ 3  ) - mean(x1)
+% 6b1 =       mean(x2) + mean(x3) + mean(x1)         - 3mean(x1)
+% 6b1 =       mean(x2) + mean(x3) + 2mean(x2)
+% 3b1 =     ( mean(x2) + mean(x3) . / 2 )            - mean(x1)
+% b1 = 0.33 ( mean(x2) + mean(x3) . / 2 )            - mean(x1) 
+
+contrastb1 = (1./3) .* (  (meanX2 + meanX3)./2 - meanX1 );
+
+% now look at x2 
+
+% mean(x2) = b0 + (b1 .* 1) + (b2 .* 1) %look at second row, first two
+%                                                                  columns
+% b2 = mean(x2) - b1 - b0
+% now take b1 from previous derivation and b0
+% messy...          --------------- b1 --------------------------       --------------b0---------------
+% b2 = mean(x2)   -  0.33 ( mean(x2) + mean(x3) . / 2 ) - mean(x1))  -   ( mean(x2) + mean(x3)  + mean(x1) ./ 3  )
+% 3b2 = 3mean(x2) -       ( mean(x2) + mean(x3) . / 2 ) - mean(x1))  -   ( mean(x2) + mean(x3)  + mean(x1) ./ 3  )
+% 6b2 = 6mean(x2) -       ( mean(x2) + mean(x3)         - 2mean(x1)) -  2( mean(x2) + mean(x3)  + mean(x1) )
+% 6b2 = 6mean(x2) -         mean(x2) - mean(x3)         + 2mean(x2)  -  2mean(x2)   - 2mean(x3) - 2mean(x2) )
+
+% 6b2 = 3mean(x2) - 3mean(x3)
+% b2 = mean(x2) - mean(x3) ./2
+
+contrastb2 = (meanX2 - meanX3) ./ 2;
+
+% from here, you can work out t-stats, and associated pvalue to check for
+% signficance.
+% needs fixing!!!
+
+% p = 3; % number of parameters (regression coeffs)
 % varModel = ssr ./ (N - p);
 % seModel = sqrt(varModel); %<--- standard error in the model
 % 
 % % model standard error divided by sum of squares for predictor x (but first
 % % sqrt)
-% seb = seModel ./ sqrt(predssX); %<-- this is the standard error of b1
-% 
-% 
-% 
-% % confidence intervals for b1
-% % 95% upper/lower = b +/- (t_n-p .* seb)
-% % t for 8 dof, at 0.05 is 2.306
-% % t for 26 dof, 0.05, is 2.056
-% ci95lower = b1 - (2.056 .* seb);
-% ci95upper = b1 + (2.056 .* seb);
-% 
-% % is this value is greater than the t stat at N-p dof, then it is
-% % significant (depending on what p you want)
-% % for a two-tailed test, we must look at the interval between the
-% % confidence intervals, if our value lies outside this, then it is
-% % significant
-% 
-% % for a paired samples t-test, we would just do the same for the
-% % differences.
-% % mean(differences) and std of difference
-% % se_diff = sd ./ sqrt(N)
-% % t = mean(differences) ./ se_diff
-% tb = b1 ./ seb;
-% 
-% 
-% 
-% 
-% %% goodness of fit
-% 
-% % 1  - residual sum of squares divided by total sum of squares
-% sst = sseY;
-% r2 = 1 - (ssr ./ sst);
-% % with one variable (predictor), this is equivalent to Pearson's
-% % correlation coeff
-% 
-% %% covariance
-% cov = scp ./ (N-1);
-% 
-% % pearson's r
-% r = cov ./ (sdX.*sdY);
-% 
-% % t scores
-% t = (r .* sqrt(N-2))  ./  sqrt(  (1-r.^2)  );
-% 
-% % matlab: 
-% [h p ci stats] = ttest2(x, y);
-% 
-% % df = N - no. parameters
-% % for this dataset, df = 8, and at p = 0.05, tnull = 2.306
-% % for values smaller than this, the trend is not significant
-% 
-% 
-% %% effect size
-% d = (meanX1 - meanX2) ./ seModel;
-% % for paired samples, would have to use:
-% % d = d ./ sqrt(1-r) where r is pearson's correlation
-% % standardize by dividing by std and .* sqrt(2)
+% seb = seModel ./ sqrt(x2total); %<-- this is the standard error of b1
+% tb = contrastb1 ./ seb;
 
