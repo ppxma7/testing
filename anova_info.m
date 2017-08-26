@@ -11,9 +11,13 @@
 
 %% f-ratio
 
-x1 = [8 2 7 8 1 5 7 4 4 4 7 3]';
-x2 = [10 5 3 4 3 7 8 3 4 3 4 3]';
-x3 = [0 5 2 1 0 10 0 0 1 1 3 9]';
+% x1 = [8 2 7 8 1 5 7 4 4 4 7 3]';
+% x2 = [10 5 3 4 3 7 8 3 4 3 4 3]';
+% x3 = [0 5 2 1 0 10 0 0 1 1 3 9]';
+
+x1 = [3 2 1 1 4]';
+x2 = [5 2 4 2 3]';
+x3 = [7 4 5 3 6]';
 
 N = length(x1).*3;
 
@@ -118,8 +122,10 @@ ssmodel = sst - ssr;
 % groups). So, we should find the Mean Sum of Squares (MS), by dividing by
 % dof.
 groups = 3;
+% this is the variation explained by the model 
 MS_model = ssmodel ./ (groups-1); % used 3 group means minus 1 (for dof)
 
+% this is variation unexplained by model
 MS_residual = ssr ./ (N - groups);
 
 % Now can calculate f-ratio (explained variance to noise)
@@ -128,6 +134,48 @@ f_ratio = MS_model ./ MS_residual;
 % dof model is 2, dof resid is 33. Look at f-table and at 0.05, the
 % critical value is 3.28. If our value is less than that, then not
 % significant at p = 0.05
+
+% descriptives
+% standard error is sd ./ sqrt(N)
+% se_x1 = sdX1 ./ sqrt(N./3);
+% se_x2 = sdX2 ./ sqrt(N./3);
+% se_x3 = sdX3 ./ sqrt(N./3);
+
+%% testing...
+% This is another way to find ssr...
+modelData = [zeros(N,1) zeros(N,1) zeros(N,1)];
+modelData(:,1) = repmat(b0, N, 1);
+modelData(:,2) = repmat(b1, N, 1);
+modelData(:,3) = repmat(b2, N, 1);
+
+% make the x's design matrix
+x2_model = [zeros(N./3 ,1); ones(N./3,1); zeros(N./3, 1)];
+x3_model = [zeros(N./3 ,1); zeros(N./3,1); ones(N./3, 1)];
+modelx23 = modelData(:,1) + modelData(:,2).*x2_model + modelData(:,3).*x3_model;
+
+% residual g's (g - model g's)
+residg = gx - modelx23;
+sqresidg = residg.^2;
+ssr_alternate = sum(sqresidg); 
+
+% x23 = [zeros(N./3 ,1); ones(N./3,1); ones(N./3, 1)];
+
+xcp_x2 = x2_model - mean(x2_model);
+xcp_x3 = x3_model - mean(x3_model);
+
+predssX2_alt = sum((xcp_x2.^2));
+predssX3_alt = sum((xcp_x3.^2));
+%
+se_residual = sqrt(MS_residual);
+%se_model = sqrt(MS_model);
+
+seb_residual_x2 = se_residual ./ sqrt(predssX2_alt);
+seb_residual_x3 = se_residual ./ sqrt(predssX3_alt);
+tb1 = b1 ./ seb_residual_x2;
+tb2 = b2 ./ seb_residual_x3;
+% for some reason, this is not quite the answer in the book - why? it's
+% slightly off. Perhaps it's because I'm applying t-testing to more than 2
+% groups and this is wrong??
 
 %% contrast coding
 
@@ -179,6 +227,7 @@ contrastb2 = (meanX2 - meanX3) ./ 2;
 % from here, you can work out t-stats, and associated pvalue to check for
 % signficance.
 % needs fixing!!!
+
 
 % p = 3; % number of parameters (regression coeffs)
 % varModel = ssr ./ (N - p);
