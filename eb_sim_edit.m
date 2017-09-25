@@ -107,14 +107,13 @@ for ii = 1:256
     noise = std_noise*(randn(newlength,1));
 end
 
-%% gramm
-clf
+%% gramm_sim
 g = gramm('x', co, 'y', r2); 
 %g = gramm('x', co, 'y', r2); 
 %cmap = rainbow_colors(4).*0.9;
 %g.set_color_options('map', cmap)
-%g.geom_jitter('height',0.1, 'alpha',0.8);
-g.geom_point('dodge', 0.5, 'alpha',0.8);
+%g(1,1).geom_jitter('height',0.1, 'alpha',0.6);
+g.geom_point('dodge', 0.5, 'alpha',0.5);
 %g.stat_glm('disp_fit',true)
 
 %g.facet_wrap(dig,'ncols',2,'scale','fixed')
@@ -124,14 +123,61 @@ g.axe_property('YLim', [0,1])
 
 g.set_title('Coherence and r2 ')
 g.set_text_options('font', 'Helvetica', 'base_size', 16)
+g.set_color_options('map', cmap(1,:))
+
+
+%% real data
+r2 = prf_overlays(:,1);
+r = sqrt(r2);
+co = tw_overlays(:,1);
+
+idx = ~isnan(r2);
+r2 = r2(idx);
+r = r(idx);
+co = co(idx);
+
+corrcoef(co,r2);
+% corrcoef(co,r);
+
+%% gramm
+cmap = [228,26,28; 55,126,184; 77,175,74; 152,78,163; 255,127,0];
+cmap = cmap./256;
+
+clf
+g(1,1) = gramm('x', co, 'y', r2); 
+%g = gramm('x', co, 'y', r2); 
+%cmap = rainbow_colors(4).*0.9;
+%g.set_color_options('map', cmap)
+%g(1,1).geom_jitter('height',0.1, 'alpha',0.6);
+g(1,1).geom_point('dodge', 0.5, 'alpha',0.5);
+%g.stat_glm('disp_fit',true)
+
+%g.facet_wrap(dig,'ncols',2,'scale','fixed')
+%g.set_names('x','Coherence (TW)', 'y', 'r2 (pRF)', 'column', 'Digit', 'color', 'Digit (pRF)')
+g(1,1).set_names('x','Coherence ', 'y', 'r2 ')
+g(1,1).axe_property('YLim', [0,1])
+
+g(1,1).set_title('Coherence and r2 ')
+g(1,1).set_text_options('font', 'Helvetica', 'base_size', 16)
+g(1,1).set_color_options('map', cmap(1,:))
+
+
+g(1,2) = gramm('x', co, 'y', r); 
+%g = gramm('x', co, 'y', r2); 
+%cmap = rainbow_colors(4).*0.9;
+%g.set_color_options('map', cmap)
+%g(1,2).geom_jitter('height',0.1, 'alpha',0.6);
+g(1,2).geom_point('dodge', 0.5, 'alpha',0.5);
+%g.stat_glm('disp_fit',true)
+
+%g.facet_wrap(dig,'ncols',2,'scale','fixed')
+%g.set_names('x','Coherence (TW)', 'y', 'r2 (pRF)', 'column', 'Digit', 'color', 'Digit (pRF)')
+g(1,2).set_names('x','Coherence ', 'y', 'r ')
+g(1,2).axe_property('YLim', [0,1])
+
+g(1,2).set_title('Coherence and r ')
+g(1,2).set_text_options('font', 'Helvetica', 'base_size', 16)
+g(1,2).set_color_options('map', cmap(1,:))
+
 g.draw()
-
-
-
-
-
-
-
-
-
 
