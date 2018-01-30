@@ -124,7 +124,7 @@ g.axe_property('YLim', [0,1])
 g.set_title('Coherence and r2 ')
 g.set_text_options('font', 'Helvetica', 'base_size', 16)
 g.set_color_options('map', cmap(1,:))
-
+g.draw()
 
 %% real data
 r2 = prf_overlays(:,1);
@@ -156,6 +156,7 @@ g(1,1).geom_point('dodge', 0.5, 'alpha',0.5);
 %g.set_names('x','Coherence (TW)', 'y', 'r2 (pRF)', 'column', 'Digit', 'color', 'Digit (pRF)')
 g(1,1).set_names('x','Coherence ', 'y', 'r2 ')
 g(1,1).axe_property('YLim', [0,1])
+g(1,1).axe_property('XLim', [0,1])
 
 g(1,1).set_title('Coherence and r2 ')
 g(1,1).set_text_options('font', 'Helvetica', 'base_size', 16)
@@ -174,6 +175,9 @@ g(1,2).geom_point('dodge', 0.5, 'alpha',0.5);
 %g.set_names('x','Coherence (TW)', 'y', 'r2 (pRF)', 'column', 'Digit', 'color', 'Digit (pRF)')
 g(1,2).set_names('x','Coherence ', 'y', 'r ')
 g(1,2).axe_property('YLim', [0,1])
+
+g(1,2).axe_property('XLim', [0,1])
+
 
 g(1,2).set_title('Coherence and r ')
 g(1,2).set_text_options('font', 'Helvetica', 'base_size', 16)
