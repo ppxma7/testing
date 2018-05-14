@@ -54,3 +54,69 @@ ylabel('BOLD % signal change')
 
 legend([h hh hhh], {'5s','1s', 'Wiener deconv 5s'})
 
+%% plot mb3 vs mb2 better
+
+ebalpha = 0.6;
+
+load('kill_grt_1s_mb2.mat')
+%clean_lkj = detrend(clean_lkj);
+%clean_lkj = clean_lkj.*100;
+mclean1s = mean(clean_bla,2);
+msem1s = std(clean_bla,0,2) ./ sqrt(length(mclean1s));
+x = 1:55;
+%figure, errorbar(mclean, msem);
+
+%clear variables
+%
+%mboop = mean(clean_bla,2);
+%mmboop = max(mboop,[],1);
+
+figure
+subplot(2,1,1)
+h = errorPlot(x, mclean1s, msem1s, [0 0 1], [1 1 1]*0.8, ebalpha, 1);
+hold on
+
+clear clean_lkj mclean msem
+
+%load('rh_1s_getroitseries_feb18.mat')
+load('kill_grt_1s_mb3.mat')
+mclean1s3 = mean(clean_bla,2);
+msem1s3 = std(clean_bla,0,2) ./ sqrt(length(mclean1s3));
+%x = 1:55;
+
+hh = errorPlot(x, mclean1s3, msem1s3, [1 0 0], [1 1 1]*0.8, ebalpha, 1);
+ylim([-2 4])
+
+ylabel('BOLD % signal change')
+
+
+
+subplot(2,1,2)
+clear clean_lkj mclean msem
+legend([h hh], {'1s MB2', '1s MB3'})
+
+%load('wiener_deconv_hrfs.mat')
+load('kill_grt_5s_mb2.mat')
+mclean5s = mean(clean_bla,2);
+msem5s = std(clean_bla,0,2) ./ sqrt(length(mclean5s));
+%x = 1:55;
+
+hhh = errorPlot(x, mclean5s, msem5s, [0 0 1], [1 1 1]*0.8, ebalpha, 1);
+
+clear clean_lkj mclean msem
+% mb3
+load('kill_grt_5s_mb3.mat')
+mclean5s3 = mean(clean_bla,2);
+msem5s3 = std(clean_bla,0,2) ./ sqrt(length(mclean5s3));
+%x = 1:55;
+
+hhhh = errorPlot(x, mclean5s3, msem5s3, [1 0 0], [1 1 1]*0.8, ebalpha, 1);
+
+clear clean_lkj mclean msem
+
+
+
+xlabel('time (s)')
+
+legend([hhh hhhh], {'5s MB2', '5s MB3'})
+
