@@ -120,3 +120,131 @@ xlabel('time (s)')
 
 legend([hhh hhhh], {'5s MB2', '5s MB3'})
 
+%% general plotting
+
+figure
+load('grt_d2_june18.mat')
+x = 1:29;
+xT = 1:522;
+
+if exist('clean_bla','var')
+    clean_lkj = clean_bla;
+else
+    clean_lkj = detrend(clean_lkj);
+    clean_lkj = clean_lkj.*100;
+end
+
+mclean = mean(clean_lkj,2);
+msem = std(clean_lkj,0,2) ./ sqrt(length(mclean));
+%figure, errorbar(mclean, msem);
+% clear variable
+rr = errorPlot(x, mclean, msem, [1 0 0], [1 1 1]*0.85, 0.6, 2);
+
+if exist('clean_tmp','var')
+    tmpSeries2 = clean_tmp;
+else
+    tmpSeries2 = detrend(tmpSeries);
+    tmpSeries2 = tmpSeries2.*100;
+end
+
+mcleanTT = mean(tmpSeries2,2);
+msemTT = std(tmpSeries2,0,2) ./ sqrt(length(mcleanTT));
+
+load('grt_d3_june18.mat')
+if exist('clean_bla','var')
+    clean_lkj = clean_bla;
+else
+    clean_lkj = detrend(clean_lkj);
+    clean_lkj = clean_lkj.*100;
+end
+mclean = mean(clean_lkj,2);
+msem = std(clean_lkj,0,2) ./ sqrt(length(mclean));
+hold on
+rrr = errorPlot(x, mclean, msem, [0 1 0], [1 1 1]*0.85, 0.6, 2);
+
+if exist('clean_tmp','var')
+    tmpSeries2 = clean_tmp;
+else
+    tmpSeries2 = detrend(tmpSeries);
+    tmpSeries2 = tmpSeries2.*100;
+end
+
+mcleanTTT = mean(tmpSeries2,2);
+msemTTT = std(tmpSeries2,0,2) ./ sqrt(length(mcleanTTT));
+
+load('grt_d4_june18.mat')
+if exist('clean_bla','var')
+    clean_lkj = clean_bla;
+else
+    clean_lkj = detrend(clean_lkj);
+    clean_lkj = clean_lkj.*100;
+end
+mclean = mean(clean_lkj,2);
+msem = std(clean_lkj,0,2) ./ sqrt(length(mclean));
+hold on
+rrrr = errorPlot(x, mclean, msem, [0 0 1], [1 1 1]*0.85, 0.6, 2);
+
+if exist('clean_tmp','var')
+    tmpSeries2 = clean_tmp;
+else
+    tmpSeries2 = detrend(tmpSeries);
+    tmpSeries2 = tmpSeries2.*100;
+end
+
+mcleanTTTT = mean(tmpSeries2,2);
+msemTTTT = std(tmpSeries2,0,2) ./ sqrt(length(mcleanTTTT));
+
+legend([rr rrr rrrr], {'D2', 'D3', 'D4'})
+ylabel('BOLD % signal change')
+xlabel('time (s)')
+ylim([-1.5 1.5])
+% now for tmpseries
+
+figure('Position',[100 100 1200 500]);
+subplot(3,1,1)
+rT = errorPlot(xT, mcleanTT, msemTT, [0 0 0], [1 1 1]*0.8, 1, 2);
+xlim([0 522])
+noEvents = 18-2;
+vline(25)
+hold on
+for ii = 1:noEvents
+    vline([25+(29.*ii)])
+end
+set(gca,'xticklabel', {[]});
+
+
+subplot(3,1,2)
+rTT = errorPlot(xT, mcleanTTT, msemTTT, [0 0 0], [1 1 1]*0.8, 1, 2);
+xlim([0 522])
+
+vline(25)
+hold on
+for ii = 1:noEvents
+    vline([25+(29.*ii)])
+end
+ylabel('BOLD % signal change')
+set(gca,'xticklabel', {[]});
+
+
+subplot(3,1,3)
+rTTT = errorPlot(xT, mcleanTTTT, msemTTTT, [0 0 0], [1 1 1]*0.8, 1, 2);
+xlim([0 522])
+
+vline(25)
+hold on
+
+for ii = 1:noEvents
+    vline([25+(29.*ii)])
+end
+
+xlabel('time (s)')
+
+   
+   
+   
+   
+   
+   
+   
+   
+   

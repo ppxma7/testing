@@ -97,20 +97,34 @@ for ii = 1:256
     %% compute r2
     
     
-    r = corrcoef(data_signal(ii,:), sine_wave);
-    r = r(2,1);
+    tempr = corrcoef(data_signal(ii,:), sine_wave);
+    r(ii) = tempr(2,1);
     %r = corr(data_signal(ii,:), sine_wave);
-    r2(ii) = r .^2; 
+    r2(ii) = r(ii) .^2; 
     
     % increment the noise
     std_noise = std_noise + 0.01;
     noise = std_noise*(randn(newlength,1));
 end
 
+
+%% real data
+r2_real = prf_overlays(:,1);
+r_real = sqrt(r2_real);
+co_real = tw_overlays(:,1);
+
+idx = ~isnan(r2_real);
+r2_real = r2_real(idx);
+r_real = r_real(idx);
+co_real = co_real(idx);
+
+corrcoef(co_real,r2_real);
+% corrcoef(co,r);
+
 %% gramm_sim
 g = gramm('x', co, 'y', r2); 
 %g = gramm('x', co, 'y', r2); 
-%cmap = rainbow_colors(4).*0.9;
+cmap = rainbow_colors(4).*0.9;
 %g.set_color_options('map', cmap)
 %g(1,1).geom_jitter('height',0.1, 'alpha',0.6);
 g.geom_point('dodge', 0.5, 'alpha',0.5);
@@ -126,62 +140,50 @@ g.set_text_options('font', 'Helvetica', 'base_size', 16)
 g.set_color_options('map', cmap(1,:))
 g.draw()
 
-%% real data
-r2 = prf_overlays(:,1);
-r = sqrt(r2);
-co = tw_overlays(:,1);
-
-idx = ~isnan(r2);
-r2 = r2(idx);
-r = r(idx);
-co = co(idx);
-
-corrcoef(co,r2);
-% corrcoef(co,r);
-
-%% gramm
+%% gramm_Real
 cmap = [228,26,28; 55,126,184; 77,175,74; 152,78,163; 255,127,0];
 cmap = cmap./256;
 
 clf
+% this is the simulated stuff
 g(1,1) = gramm('x', co, 'y', r2); 
-%g = gramm('x', co, 'y', r2); 
 %cmap = rainbow_colors(4).*0.9;
 %g.set_color_options('map', cmap)
-%g(1,1).geom_jitter('height',0.1, 'alpha',0.6);
 g(1,1).geom_point('dodge', 0.5, 'alpha',0.5);
-%g.stat_glm('disp_fit',true)
-
-%g.facet_wrap(dig,'ncols',2,'scale','fixed')
-%g.set_names('x','Coherence (TW)', 'y', 'r2 (pRF)', 'column', 'Digit', 'color', 'Digit (pRF)')
 g(1,1).set_names('x','Coherence ', 'y', 'r2 ')
 g(1,1).axe_property('YLim', [0,1])
-g(1,1).axe_property('XLim', [0,1])
-
-g(1,1).set_title('Coherence and r2 ')
+g(1,1).set_title('Coherence and r2 (simulated)')
 g(1,1).set_text_options('font', 'Helvetica', 'base_size', 16)
-g(1,1).set_color_options('map', cmap(1,:))
-
+g(1,1).set_color_options('map', cmap(2,:))
 
 g(1,2) = gramm('x', co, 'y', r); 
-%g = gramm('x', co, 'y', r2); 
+g(1,2).geom_point('dodge', 0.5, 'alpha',0.5);
+g(1,2).set_names('x','Coherence ', 'y', 'r')
+g(1,2).axe_property('YLim', [0,1])
+g(1,2).set_title('Coherence and r (simulated)')
+g(1,2).set_text_options('font', 'Helvetica', 'base_size', 16)
+g(1,2).set_color_options('map', cmap(2,:))
+
+% this is the real stuff
+g(2,1) = gramm('x', co_real, 'y', r2_real); 
+g(2,1).geom_point('dodge', 0.5, 'alpha',0.5);
+g(2,1).set_names('x','Coherence ', 'y', 'r2 (data)')
+g(2,1).axe_property('YLim', [0,1])
+g(2,1).axe_property('XLim', [0,1])
+g(2,1).set_title('Coherence and r2 ')
+g(2,1).set_text_options('font', 'Helvetica', 'base_size', 16)
+g(2,1).set_color_options('map', cmap(1,:))
+
+g(2,2) = gramm('x', co_real, 'y', r_real); 
 %cmap = rainbow_colors(4).*0.9;
 %g.set_color_options('map', cmap)
-%g(1,2).geom_jitter('height',0.1, 'alpha',0.6);
-g(1,2).geom_point('dodge', 0.5, 'alpha',0.5);
-%g.stat_glm('disp_fit',true)
-
-%g.facet_wrap(dig,'ncols',2,'scale','fixed')
-%g.set_names('x','Coherence (TW)', 'y', 'r2 (pRF)', 'column', 'Digit', 'color', 'Digit (pRF)')
-g(1,2).set_names('x','Coherence ', 'y', 'r ')
-g(1,2).axe_property('YLim', [0,1])
-
-g(1,2).axe_property('XLim', [0,1])
-
-
-g(1,2).set_title('Coherence and r ')
-g(1,2).set_text_options('font', 'Helvetica', 'base_size', 16)
-g(1,2).set_color_options('map', cmap(1,:))
+g(2,2).geom_point('dodge', 0.5, 'alpha',0.5);
+%g(1,2).stat_glm('disp_fit',true)
+g(2,2).set_names('x','Coherence ', 'y', 'r ')
+g(2,2).axe_property('YLim', [0,1])
+g(2,2).axe_property('XLim', [0,1])
+g(2,2).set_title('Coherence and r (data)')
+g(2,2).set_text_options('font', 'Helvetica', 'base_size', 16)
+g(2,2).set_color_options('map', cmap(1,:))
 
 g.draw()
-
