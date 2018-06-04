@@ -8,7 +8,7 @@ load('grt_5s2_kill.mat')
 clean_lkj = detrend(clean_lkj);
 clean_lkj = clean_lkj.*100;
 mclean13 = mean(clean_lkj,2);
-msem13 = std(clean_lkj,0,2) ./ length(mclean13);
+msem13 = std(clean_lkj,0,2) ./ sqrt(length(mclean13));
 x = 1:55;
 %figure, errorbar(mclean, msem);
 
@@ -18,7 +18,7 @@ mboop = mean(clean_lkj,2);
 mmboop = max(mboop,[],1);
 
 figure
-h = errorPlot(x, mclean13, msem13, [0 0 0], [1 1 1]*0.8, 1, 1);
+h = errorPlot(x, mclean13, msem13, [0 0 0], [1 1 1]*0.8, 0.6, 1);
 hold on
 
 clear clean_lkj mclean msem
@@ -28,14 +28,14 @@ load('grt_1s_kill.mat')
 clean_lkj = detrend(clean_lkj);
 clean_lkj = clean_lkj.*100;
 mclean14 = mean(clean_lkj,2);
-msem14 = std(clean_lkj,0,2) ./ length(mclean14);
+msem14 = std(clean_lkj,0,2) ./ sqrt(length(mclean14));
 
-hh = errorPlot(x, mclean14, msem14, [0 0 1], [1 1 1]*0.8, 1, 1);
+hh = errorPlot(x, mclean14, msem14, [0 0 1], [1 1 1]*0.8, 0.6, 1);
 
 clear clean_lkj mclean msem
 
 %load('wiener_deconv_hrfs.mat')
-load('grt_wiener_5s2.mat')
+load('grt_wiener_5s.mat')
 clean_lkj = wienerShapes_empty;
 %clean_lkj = detrend(clean_lkj);
 %clean_lkj = clean_lkj.*100;
@@ -43,11 +43,11 @@ clean_lkj = wienerShapes_empty;
 
 %fudge factor for pRFVis4
 %clean_lkj = detrend(clean_lkj);
-clean_lkj = clean_lkj.*2;
+clean_lkj = clean_lkj.*3;
 mclean15 = mean(clean_lkj,2);
-msem15 = std(clean_lkj,0,2) ./ length(mclean15);
+msem15 = std(clean_lkj,0,2) ./ sqrt(length(mclean15));
 
-hhh = errorPlot(x, mclean15, msem15, [1 0 0], [1 1 1]*0.8, 1, 1);
+hhh = errorPlot(x, mclean15, msem15, [1 0 0], [1 1 1]*0.8, 0.6, 1);
 
 xlabel('time (s)')
 ylabel('BOLD % signal change')
@@ -238,6 +238,51 @@ for ii = 1:noEvents
 end
 
 xlabel('time (s)')
+
+%% plotting for Figure5.4 chapter5, vistest1
+
+load('rh_grt_april2018_smallroi.mat')
+
+x = 1:size(clean_lkj,1);
+xT = 1:size(tmpSeries,1);
+
+%if exist('clean_bla','var')
+%    clean_lkj = clean_bla;
+%else
+%    clean_lkj = detrend(clean_lkj);
+%    clean_lkj = clean_lkj.*100;
+%end
+
+mclean = mean(clean_lkj,2);
+msem = std(clean_lkj,0,2) ./ sqrt(length(mclean));
+figure
+vv1 = errorPlot(x, mclean, msem, [0 0 0], [1 1 1]*0.85, 1, 2);
+
+if exist('clean_tmp','var')
+    tmpSeries2 = clean_tmp;
+else
+    tmpSeries2 = detrend(tmpSeries);
+    tmpSeries2 = tmpSeries2.*100;
+end
+
+
+
+mcleanTT = mean(tmpSeries2,2);
+msemTT = std(tmpSeries2,0,2) ./ sqrt(length(mcleanTT));
+figure
+vv1T = errorPlot(xT, mcleanTT, msemTT, [0 0 0], [1 1 1]*0.75, 1, 2);
+%xlim([0 ])
+
+noEvents = 6;
+vline(45)
+hold on
+for ii = 1:noEvents
+    vline((45.*ii))
+end
+ylabel('BOLD % signal change')
+%set(gca,'xticklabel', {[]});
+xlabel('time (s)')
+
 
    
    
