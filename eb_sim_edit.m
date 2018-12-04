@@ -9,7 +9,7 @@
 % well...
 
 newlength = 240;
-nCycles = 10;
+nCycles = 12;
 sequence_time = 1:newlength;
 
 std_noise = 0.5; % STD of noise
@@ -51,6 +51,45 @@ sumAmp = sqrt(sum(ampFT.^2));
 nonzeroIndices = find(sumAmp >0);
 co(nonzeroIndices) = ampFT(nCycles+1,nonzeroIndices) ./ sumAmp(nonzeroIndices);
 fprintf('\nCoherence is %.3f\n\n', co)
+
+%% cross corr == coherence?
+% what is cross corr between signal and signal_noise
+
+Sf = fft(signal');
+%Sf = Sf(1:1+fix(size(Sf, 1)/2), :);
+SNf = fft(signal_noise');
+%SNf = SNf(1:1+fix(size(SNf, 1)/2), :);
+SNf_cc = conj(SNf); %complex conj
+
+mycrosscorr = Sf .* SNf_cc;
+
+mycrosscorr = ifft(mycrosscorr);
+%figure, plot(mycrosscorr);
+aCF1 = ifft(Sf.*conj(Sf));
+aCF2 = ifft(SNf.*conj(SNf));
+myccR = real(mycrosscorr) / (sqrt(aCF1(1))*sqrt(aCF2(1))); %WHY?
+figure, plot(myccR)
+
+% using crosscorr.m
+y1 = signal';
+y2 = signal_noise';
+y1 = y1-mean(y1);
+y2 = y2-mean(y2);
+L1 = length(y1);
+L2 = length(y2);
+
+nFFT = 2^(nextpow2(max([L1 L2]))+1); % next higher power of 2
+F = fft([y1(:) y2(:)],nFFT); 
+
+
+ACF1 = ifft(F(:,1).*conj(F(:,1)));
+ACF2 = ifft(F(:,2).*conj(F(:,2)));
+numLags = 20;
+xcf = ifft(F(:,1).*conj(F(:,2)));
+xcf = xcf([(numLags+1:-1:1) (nFFT:-1:(nFFT-numLags+1))]); % give it a set of lags. if lags=0, will return one number
+xcf = real(xcf)/(sqrt(ACF1(1))*sqrt(ACF2(1)));
+figure, plot(xcf)
+
 
 %% calc r2 between signal and signal_noise
 r = corr(signal(:), signal_noise(:));
