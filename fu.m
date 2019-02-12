@@ -4,7 +4,8 @@
 %clc
 %clear variables
 %load('rh_5s_getroitseries_feb18.mat')
-load('grt_5s2_kill.mat')
+%load('grt_5s2_kill.mat')
+load('kill_grt_5s_mb3.mat')
 clean_lkj = detrend(clean_lkj);
 clean_lkj = clean_lkj.*100;
 mclean13 = mean(clean_lkj,2);
@@ -24,7 +25,7 @@ hold on
 clear clean_lkj mclean msem
 
 %load('rh_1s_getroitseries_feb18.mat')
-load('grt_1s_kill.mat')
+load('kill_grt_1s_mb3.mat')
 clean_lkj = detrend(clean_lkj);
 clean_lkj = clean_lkj.*100;
 mclean14 = mean(clean_lkj,2);
@@ -35,7 +36,7 @@ hh = errorPlot(x, mclean14, msem14, [0 0 1], [1 1 1]*0.8, 0.6, 1);
 clear clean_lkj mclean msem
 
 %load('wiener_deconv_hrfs.mat')
-load('grt_wiener_5s.mat')
+load('wiener_kill_5s_mb3.mat')
 clean_lkj = wienerShapes_empty;
 %clean_lkj = detrend(clean_lkj);
 %clean_lkj = clean_lkj.*100;
@@ -123,15 +124,16 @@ legend([hhh hhhh], {'5s MB2', '5s MB3'})
 %% general plotting
 
 figure
-load('grt_d2_june18.mat')
+load('kill_d2_hrf.mat')
 x = 1:29;
 xT = 1:522;
 
 if exist('clean_bla','var')
     clean_lkj = clean_bla;
 else
-    clean_lkj = detrend(clean_lkj);
-    clean_lkj = clean_lkj.*100;
+    %clean_lkj = detrend(clean_lkj);
+    %clean_lkj = clean_lkj.*100;
+    clean_lkj = (clean_lkj-1).*100;
 end
 
 mclean = mean(clean_lkj,2);
@@ -150,12 +152,13 @@ end
 mcleanTT = mean(tmpSeries2,2);
 msemTT = std(tmpSeries2,0,2) ./ sqrt(length(mcleanTT));
 
-load('grt_d3_june18.mat')
+load('kill_d3_hrf.mat')
 if exist('clean_bla','var')
     clean_lkj = clean_bla;
 else
-    clean_lkj = detrend(clean_lkj);
-    clean_lkj = clean_lkj.*100;
+    %clean_lkj = detrend(clean_lkj);
+    %clean_lkj = clean_lkj.*100;
+    clean_lkj = (clean_lkj-1).*100;
 end
 mclean = mean(clean_lkj,2);
 msem = std(clean_lkj,0,2) ./ sqrt(length(mclean));
@@ -172,12 +175,13 @@ end
 mcleanTTT = mean(tmpSeries2,2);
 msemTTT = std(tmpSeries2,0,2) ./ sqrt(length(mcleanTTT));
 
-load('grt_d4_june18.mat')
+load('kill_d4_hrf.mat')
 if exist('clean_bla','var')
     clean_lkj = clean_bla;
 else
-    clean_lkj = detrend(clean_lkj);
-    clean_lkj = clean_lkj.*100;
+    %clean_lkj = detrend(clean_lkj);
+    %clean_lkj = clean_lkj.*100;
+    clean_lkj = (clean_lkj-1).*100;
 end
 mclean = mean(clean_lkj,2);
 msem = std(clean_lkj,0,2) ./ sqrt(length(mclean));
@@ -197,7 +201,7 @@ msemTTTT = std(tmpSeries2,0,2) ./ sqrt(length(mcleanTTTT));
 legend([rr rrr rrrr], {'D2', 'D3', 'D4'})
 ylabel('BOLD % signal change')
 xlabel('time (s)')
-ylim([-1.5 1.5])
+%ylim([-1.5 1.5])
 % now for tmpseries
 
 figure('Position',[100 100 1200 500]);
