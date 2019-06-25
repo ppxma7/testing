@@ -124,7 +124,7 @@ legend([hhh hhhh], {'5s MB2', '5s MB3'})
 %% general plotting
 
 figure
-load('kill_d2_hrf.mat')
+load('kill_d2_glm.mat')
 x = 1:29;
 xT = 1:522;
 
@@ -152,7 +152,7 @@ end
 mcleanTT = mean(tmpSeries2,2);
 msemTT = std(tmpSeries2,0,2) ./ sqrt(length(mcleanTT));
 
-load('kill_d3_hrf.mat')
+load('kill_d3_glm.mat')
 if exist('clean_bla','var')
     clean_lkj = clean_bla;
 else
@@ -175,7 +175,7 @@ end
 mcleanTTT = mean(tmpSeries2,2);
 msemTTT = std(tmpSeries2,0,2) ./ sqrt(length(mcleanTTT));
 
-load('kill_d4_hrf.mat')
+load('kill_d4_glm.mat')
 if exist('clean_bla','var')
     clean_lkj = clean_bla;
 else
