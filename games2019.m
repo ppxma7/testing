@@ -3,14 +3,19 @@
 % [ma] Feb 2019
 clear variables
 myGames = {'Tetris Effect', 'Far Cry New Dawn', 'Night in the Woods', ...
-    'Shadow of the TR', 'ACO:Helix credits', 'RDR2'}';
-whichMonth = {'January', 'February', 'February','February', 'March', ...
-    'March'}';
+    'Shadow of the TR', 'ACO:Helix credits', 'RDR2',...
+    'Absolute Drift', 'Mutant Year Zero', 'Surviving Mars','DragonBall FighterZ',...
+    'Superhot VR', 'Killzone SF', 'Days Gone', 'Blood and Truth VR'}';
+
+whichMonth = {'January', 'February', 'February',...
+    'February', 'March','March',...
+    'May', 'May', 'May', 'May',...
+    'May', 'June', 'June', 'June'}';
 
 %check month
-thismonth = str2num(datestr(now,5));
+thismonth = str2double(datestr(now,5));
 
-myCost = [34.99 31.99 11.99 34.99 15.99 39.99]';
+myCost = [34.99 31.99 11.99 34.99 15.99 39.99 3.99 18.99 19.99 24.99 11.99 11.99 46 29.99]';
 
 figure('Position', [100 100 800 400])
 myfontsize = 16;
