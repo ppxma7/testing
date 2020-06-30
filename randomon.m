@@ -1,6 +1,8 @@
 % randomiser for pokemon
 function[]=randomon(myseed)
 % reuse same seed to keep list same
+%
+% ma june 2020
 
 close all
 clc
@@ -14,7 +16,6 @@ else
     rng(myseed)
 end
 
-%rng(42)
 
 % 18 types
 types = {'Normal','Fighting','Flying','Poison',...
@@ -26,7 +27,7 @@ msize = numel(types);
 Jim = types(randperm(msize)); % this creates the permutation
 Michael = types(randperm(msize));
 
-% this implies there are no replacemtns e.g. no repeats of using hte same
+% this implies there are no replacements e.g. no repeats of using the same
 % team again
 
 % table
@@ -37,9 +38,10 @@ T = table('Size',[18 2],'VariableTypes',varTypes,'VariableNames',varNames); %pre
 T.Jim = Jim(:);
 T.Michael = Michael(:);
 
-%writetable(T,'/Users/ppzma/The University of Nottingham/Michael_Sue - Touchmap - Touchmap/behavioural/cv_table.csv')
+writecell(T.Jim,'/Users/ppzma/Google Drive/randOM/poketable_jim.txt')
+writecell(T.Michael,'/Users/ppzma/Google Drive/randOM/poketable_michael.txt')
 
-%table(Jim,Michael)
-T
+
+
 
 
