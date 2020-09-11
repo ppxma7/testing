@@ -6,4 +6,8 @@ if onPath == 1
 end
 addpath /Users/ppzma/Documents/spm12
 disp('adding spm12 path')
+%marsbar
+%addpath(genpath('/Users/ppzma/Documents/spm12/toolbox/marsbar-0.44'));
+%addpath(genpath('/Users/ppzma/Documents/spm12/toolbox/marsbar-aal-0.2'));
+addpath(genpath('/Users/ppzma/Documents/spm12/toolbox/ArtRepair'));
 spm
