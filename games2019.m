@@ -19,8 +19,14 @@ whichMonth = {'January', 'February', 'February',...
     'July', 'August','September','September','October','October', ...
     'October','November', 'November', 'December', 'December', 'December',...
     'December', 'December'}';
-    
-    
+
+digorphys = {'Digital','Physical','Digital',...
+    'Digital','Digital','Digital',...
+    'Digital','Digital','Digital','Digital',...
+    'Digital','Digital','Digital','Physical',...
+    'Digital','Physical','Digital','Digital','Digital','Digital',...
+    'Digital','Digital','Digital','Digital','Digital','Digital',...
+    'Digital','Digital',}';
 
 %check month
 thismonth = str2double(datestr(now,5));
@@ -43,6 +49,53 @@ g.draw()
 
 fprintf('\nTotal spent this year: £%.2f\n',sum(myCost));
 fprintf('\nMean monthly spend so far: £%.2f\n',sum(myCost)./12);
+
+
+
+    
+
+A = cellfun(@(x) x(1:3),digorphys,'UniformOutput',false);
+
+% lengths
+D = length(cell2mat(strfind(A,'Dig')));
+P = length(cell2mat(strfind(A,'Phy')));
+%H = length(cell2mat(strfind(A,'Har')));
+X = [D;P;length(A)-D-P];
+
+% indexing for costings
+digIdx = contains(A,'Dig');
+phyIdx = contains(A,'Phy');
+%harIdx = contains(A,'Har');
+
+% make a cost string
+digCost = [' £' num2str(sum(myCost(digIdx)))];
+phyCost = [' £' num2str(sum(myCost(phyIdx)))];
+%harCost = [' £' num2str(sum(myCost(harIdx)))];
+
+separateCost = [digCost; phyCost];
+
+% now load up the pie
+figure
+mypie = pie(X);
+pText = findobj(mypie,'Type','text');
+percentValues = get(pText,'String'); 
+txt = {'Digital sales: ','Physical sales: '};
+combinedtxt = strcat(txt(:),percentValues(1:2), separateCost); % hack to ignore hardware here
+pText(1).String = combinedtxt(1);
+pText(2).String = combinedtxt(2);
+%pText(3).String = combinedtxt(3);
+
+% custom coloarmap
+mycmap = [102,194,165;252,141,98;141,160,203];
+mycmap = mycmap./256;
+colormap(mycmap)
+
+firstguy = ['Annual cost: £' num2str(round(sum(myCost))) ];
+secguy = ['Monthly cost: £' num2str(round(sum(myCost)./thismonth)) ];
+
+text(0.5,-1,  firstguy);
+text(0.5,-1.2,   secguy);
+
 
 %% games2020
 
@@ -75,6 +128,17 @@ whichMonth = {'January', 'January', 'January',...
     'May','May','May',...
     'June','June', 'June','June','July','July','July','July','July','August','August','August','August', 'August',...
     'September','September','September'}';
+
+digorphys = {'Hardware','Hardware','Physical','Physical',...
+    'Physical','Digital',...
+    'Digital','Digital','Digital','Digital','Digital',...
+    'Digital',...
+    'Digital','Digital','Digital','Digital','Digital','Digital','Digital','Hardware',...
+    'Digital','Digital','Digital',...
+    'Digital','Digital','Digital','Digital','Digital','Digital','Digital',...
+    'Digital','Digital','Digital','Digital','Digital','Digital','Digital','Digital',...
+    'Digital','Physical'}';
+    
     
     
 
@@ -107,6 +171,48 @@ fprintf('\nTotal spent this year: £%.2f\n',sum(myCost));
 fprintf('\nMean monthly spend so far: £%.2f\n',sum(myCost)./thismonth);
 
 
+%% digital versus physical
+% shorten 
+A = cellfun(@(x) x(1:3),digorphys,'UniformOutput',false);
+
+% lengths
+D = length(cell2mat(strfind(A,'Dig')));
+P = length(cell2mat(strfind(A,'Phy')));
+H = length(cell2mat(strfind(A,'Har')));
+X = [D;P;length(A)-D-P];
+
+% indexing for costings
+digIdx = contains(A,'Dig');
+phyIdx = contains(A,'Phy');
+harIdx = contains(A,'Har');
+
+% make a cost string
+digCost = [' £' num2str(sum(myCost(digIdx)))];
+phyCost = [' £' num2str(sum(myCost(phyIdx)))];
+harCost = [' £' num2str(sum(myCost(harIdx)))];
+
+separateCost = [digCost; phyCost; harCost];
+
+% now load up the pie
+mypie = pie(X);
+pText = findobj(mypie,'Type','text');
+percentValues = get(pText,'String'); 
+txt = {'Digital sales: ','Physical sales: ','Hardware sales: '};
+combinedtxt = strcat(txt(:),percentValues(:), separateCost); 
+pText(1).String = combinedtxt(1);
+pText(2).String = combinedtxt(2);
+pText(3).String = combinedtxt(3);
+
+% custom coloarmap
+mycmap = [102,194,165;252,141,98;141,160,203];
+mycmap = mycmap./256;
+colormap(mycmap)
+
+firstguy = ['Annual cost: £' num2str(round(sum(myCost))) ];
+secguy = ['Monthly cost: £' num2str(round(sum(myCost)./thismonth)) ];
+
+text(0.5,-1,  firstguy);
+text(0.5,-1.2,   secguy);
 
 
 
