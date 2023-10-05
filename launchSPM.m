@@ -1,14 +1,30 @@
-% add SPM path correctly
+%% add SPM path correctly
+
+% check which mac we are using to get the correct username
+whichMac = char(java.lang.System.getProperty('user.name'));
+if strcmpi(whichMac,'spmic')
+    spmdir = '/Users/spmic/Documents/spm12/';
+elseif strcmpi(whichMac,'ppzma')
+    spmdir = '/Users/ppzma/Documents/spm12/';
+else
+    error('this is setup for ppzma or spmic - check username in launchSPM.m')
+end
+
+fprintf('\nSPM12 dir is: %s\n',spmdir)
+
+% check if spm path is already loaded, otherwise remove it and relaunch it
 pathCell = regexp(path, pathsep, 'split');
-onPath = any(strcmp('/Users/ppzma/Documents/spm12', pathCell));
+onPath = any(contains(pathCell,spmdir));
 if onPath == 1
     spm_rmpath
 end
-addpath /Users/ppzma/Documents/spm12
+
+% addpaths
+addpath(spmdir)
+addpath(genpath([spmdir 'toolbox/ArtRepair']));
+addpath(genpath([spmdir 'toolbox/jubrain-anatomy-toolbox']));
+
 disp('adding spm12 path')
-%marsbar
-%addpath(genpath('/Users/ppzma/Documents/spm12/toolbox/marsbar-0.44'));
-%addpath(genpath('/Users/ppzma/Documents/spm12/toolbox/marsbar-aal-0.2'));
-addpath(genpath('/Users/ppzma/Documents/spm12/toolbox/ArtRepair'));
-addpath(genpath('/Users/ppzma/Documents/spm12/toolbox/jubrain-anatomy-toolbox'));
+
+% now launch it
 spm
