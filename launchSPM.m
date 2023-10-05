@@ -10,4 +10,5 @@ disp('adding spm12 path')
 %addpath(genpath('/Users/ppzma/Documents/spm12/toolbox/marsbar-0.44'));
 %addpath(genpath('/Users/ppzma/Documents/spm12/toolbox/marsbar-aal-0.2'));
 addpath(genpath('/Users/ppzma/Documents/spm12/toolbox/ArtRepair'));
+addpath(genpath('/Users/ppzma/Documents/spm12/toolbox/jubrain-anatomy-toolbox'));
 spm
