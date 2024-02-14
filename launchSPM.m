@@ -3,7 +3,7 @@
 % check which mac we are using to get the correct username
 whichMac = char(java.lang.System.getProperty('user.name'));
 if strcmpi(whichMac,'spmic')
-    spmdir = '/Users/spmic/Documents/spm12/';
+    spmdir = '/Users/spmic/Documents/MATLAB/spm/';
 elseif strcmpi(whichMac,'ppzma')
     spmdir = '/Users/ppzma/Documents/spm12/';
 else
@@ -22,9 +22,9 @@ end
 % addpaths
 addpath(spmdir)
 addpath(genpath([spmdir 'toolbox/ArtRepair']));
-addpath(genpath([spmdir 'toolbox/jubrain-anatomy-toolbox']));
+%addpath(genpath([spmdir 'toolbox/jubrain-anatomy-toolbox']));
 
-disp('adding spm12 path')
+disp('adding spm path')
 
 % now launch it
 spm
